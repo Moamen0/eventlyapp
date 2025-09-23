@@ -22,6 +22,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "ConnectwithFriendsShareMoments": MessageLookupByLibrary.simpleMessage(
+      "Connect with Friends & Share Moments",
+    ),
+    "Effortless_Event_Planning": MessageLookupByLibrary.simpleMessage(
+      "Effortless Event Planning",
+    ),
+    "Find_Events_That_Inspire_You": MessageLookupByLibrary.simpleMessage(
+      "Find Events That Inspire You",
+    ),
+    "LetsStart": MessageLookupByLibrary.simpleMessage("Let’s Start"),
+    "Personalize_Your_Experience": MessageLookupByLibrary.simpleMessage(
+      "Personalize Your Experience",
+    ),
     "alexandria": MessageLookupByLibrary.simpleMessage("Alexandria,Egypt"),
     "all": MessageLookupByLibrary.simpleMessage("All"),
     "already_have_account": MessageLookupByLibrary.simpleMessage(
@@ -54,6 +67,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "map": MessageLookupByLibrary.simpleMessage("Map"),
     "meeting": MessageLookupByLibrary.simpleMessage("Meeting"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
+    "obBoarding1dc": MessageLookupByLibrary.simpleMessage(
+      "Choose your preferred theme and language to get started with a comfortable, tailored experience that suits your style.",
+    ),
+    "obBoarding2dc": MessageLookupByLibrary.simpleMessage(
+      "Dive into a world of events crafted to fit your unique interests. Whether you\'re into live music, art workshops, professional networking, or simply discovering new experiences, we have something for everyone. Our curated recommendations will help you explore, connect, and make the most of every opportunity around you.",
+    ),
+    "obBoarding3dc": MessageLookupByLibrary.simpleMessage(
+      "Take the hassle out of organizing events with our all-in-one planning tools. From setting up invites and managing RSVPs to scheduling reminders and coordinating details, we’ve got you covered. Plan with ease and focus on what matters – creating an unforgettable experience for you and your guests.",
+    ),
+    "onBoardin4dc": MessageLookupByLibrary.simpleMessage(
+      "Make every event memorable by sharing the experience with others. Our platform lets you invite friends, keep everyone in the loop, and celebrate moments together. Capture and share the excitement with your network, so you can relive the highlights and cherish the memories.",
+    ),
     "or": MessageLookupByLibrary.simpleMessage("Or"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),

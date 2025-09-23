@@ -5,7 +5,9 @@ import 'package:eventlyapp/Providers/app_theme_provider.dart';
 import 'package:eventlyapp/authentication/login/login_screen.dart';
 import 'package:eventlyapp/authentication/register/register_screen.dart';
 import 'package:eventlyapp/generated/l10n.dart';
+import 'package:eventlyapp/onBording_Screens/IntroPage.dart';
 import 'package:eventlyapp/onBording_Screens/OnbordingScreen.dart';
+import 'package:eventlyapp/onBording_Screens/toggle_switch.dart';
 import 'package:eventlyapp/utils/app_routes.dart';
 import 'package:eventlyapp/utils/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +38,14 @@ class EventlyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      initialRoute: AppRoutes.loginScreen,
+      initialRoute: AppRoutes.onbording,
       routes: {
         AppRoutes.homescreen: (context) => HomeScreen(),
         AppRoutes.loginScreen: (context) => LoginScreen(),
         AppRoutes.registerScreen: (context) => RegisterScreen(),
         AppRoutes.profileTab: (context) => ProfileScreen(),
-        AppRoutes.onbording: (context) => OnBoardingPage(),
+        AppRoutes.onbording: (context) => Intropage(),
+        AppRoutes.introductionScreen: (context) => IntroductionScreen(),
       },
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

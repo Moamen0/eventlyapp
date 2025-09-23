@@ -284,6 +284,91 @@ class S {
   String get or {
     return Intl.message('Or', name: 'or', desc: '', args: []);
   }
+
+  /// `Let’s Start`
+  String get LetsStart {
+    return Intl.message('Let’s Start', name: 'LetsStart', desc: '', args: []);
+  }
+
+  /// `Personalize Your Experience`
+  String get Personalize_Your_Experience {
+    return Intl.message(
+      'Personalize Your Experience',
+      name: 'Personalize_Your_Experience',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your preferred theme and language to get started with a comfortable, tailored experience that suits your style.`
+  String get obBoarding1dc {
+    return Intl.message(
+      'Choose your preferred theme and language to get started with a comfortable, tailored experience that suits your style.',
+      name: 'obBoarding1dc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find Events That Inspire You`
+  String get Find_Events_That_Inspire_You {
+    return Intl.message(
+      'Find Events That Inspire You',
+      name: 'Find_Events_That_Inspire_You',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dive into a world of events crafted to fit your unique interests. Whether you're into live music, art workshops, professional networking, or simply discovering new experiences, we have something for everyone. Our curated recommendations will help you explore, connect, and make the most of every opportunity around you.`
+  String get obBoarding2dc {
+    return Intl.message(
+      'Dive into a world of events crafted to fit your unique interests. Whether you\'re into live music, art workshops, professional networking, or simply discovering new experiences, we have something for everyone. Our curated recommendations will help you explore, connect, and make the most of every opportunity around you.',
+      name: 'obBoarding2dc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Effortless Event Planning`
+  String get Effortless_Event_Planning {
+    return Intl.message(
+      'Effortless Event Planning',
+      name: 'Effortless_Event_Planning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take the hassle out of organizing events with our all-in-one planning tools. From setting up invites and managing RSVPs to scheduling reminders and coordinating details, we’ve got you covered. Plan with ease and focus on what matters – creating an unforgettable experience for you and your guests.`
+  String get obBoarding3dc {
+    return Intl.message(
+      'Take the hassle out of organizing events with our all-in-one planning tools. From setting up invites and managing RSVPs to scheduling reminders and coordinating details, we’ve got you covered. Plan with ease and focus on what matters – creating an unforgettable experience for you and your guests.',
+      name: 'obBoarding3dc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect with Friends & Share Moments`
+  String get ConnectwithFriendsShareMoments {
+    return Intl.message(
+      'Connect with Friends & Share Moments',
+      name: 'ConnectwithFriendsShareMoments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make every event memorable by sharing the experience with others. Our platform lets you invite friends, keep everyone in the loop, and celebrate moments together. Capture and share the excitement with your network, so you can relive the highlights and cherish the memories.`
+  String get onBoardin4dc {
+    return Intl.message(
+      'Make every event memorable by sharing the experience with others. Our platform lets you invite friends, keep everyone in the loop, and celebrate moments together. Capture and share the excitement with your network, so you can relive the highlights and cherish the memories.',
+      name: 'onBoardin4dc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

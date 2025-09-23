@@ -22,6 +22,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "ConnectwithFriendsShareMoments": MessageLookupByLibrary.simpleMessage(
+      "تواصل مع الأصدقاء وشارك اللحظات",
+    ),
+    "Effortless_Event_Planning": MessageLookupByLibrary.simpleMessage(
+      "تخطيط فعاليات بسهولة",
+    ),
+    "Find_Events_That_Inspire_You": MessageLookupByLibrary.simpleMessage(
+      "اكتشف فعاليات تُلهمك",
+    ),
+    "LetsStart": MessageLookupByLibrary.simpleMessage("لنبدأ"),
+    "Personalize_Your_Experience": MessageLookupByLibrary.simpleMessage(
+      "خصص تجربتك",
+    ),
     "alexandria": MessageLookupByLibrary.simpleMessage("الاسكندرية، مصر"),
     "all": MessageLookupByLibrary.simpleMessage("الكل"),
     "already_have_account": MessageLookupByLibrary.simpleMessage(
@@ -54,6 +67,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "map": MessageLookupByLibrary.simpleMessage("الخريطة"),
     "meeting": MessageLookupByLibrary.simpleMessage("الاجتماعات"),
     "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+    "obBoarding1dc": MessageLookupByLibrary.simpleMessage(
+      "اختر السمة واللغة المفضلة لديك لبدء تجربة مريحة ومصممة خصيصًا تناسب أسلوبك.",
+    ),
+    "obBoarding2dc": MessageLookupByLibrary.simpleMessage(
+      "انغمس في عالم من الفعاليات المصممة لتناسب اهتماماتك الفريدة. سواء كنت من محبي الموسيقى الحية، أو ورش العمل الفنية، أو شبكات التواصل المهني، أو مجرد استكشاف تجارب جديدة، لدينا ما يناسب الجميع. تساعدك توصياتنا المختارة بعناية على الاستكشاف والتواصل والاستفادة من كل فرصة من حولك.",
+    ),
+    "obBoarding3dc": MessageLookupByLibrary.simpleMessage(
+      "تخلص من عناء تنظيم الفعاليات باستخدام أدواتنا الشاملة للتخطيط. بدءًا من إعداد الدعوات وإدارة الردود (RSVPs) وصولًا إلى جدولة التذكيرات وتنسيق التفاصيل، نحن نوفر لك كل ما تحتاجه. خطط بسهولة وركز على ما هو مهم – خلق تجربة لا تُنسى لك ولضيوفك.",
+    ),
+    "onBoardin4dc": MessageLookupByLibrary.simpleMessage(
+      "اجعل كل فعالية لا تُنسى بمشاركتها مع الآخرين. تتيح لك منصتنا دعوة الأصدقاء، وإبقاء الجميع على اطلاع، والاحتفال باللحظات معًا. التقط وشارك الحماس مع شبكتك، حتى تتمكن من استعادة أجمل اللحظات والاحتفاظ بالذكريات.",
+    ),
     "or": MessageLookupByLibrary.simpleMessage("او"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
     "profile": MessageLookupByLibrary.simpleMessage("الصفحة الشخصية"),
