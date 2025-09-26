@@ -285,6 +285,81 @@ class S {
     return Intl.message('Or', name: 'or', desc: '', args: []);
   }
 
+  /// `Location`
+  String get location {
+    return Intl.message('Location', name: 'location', desc: '', args: []);
+  }
+
+  /// `Event Title`
+  String get eventTitle {
+    return Intl.message('Event Title', name: 'eventTitle', desc: '', args: []);
+  }
+
+  /// `Event Date`
+  String get eventDate {
+    return Intl.message('Event Date', name: 'eventDate', desc: '', args: []);
+  }
+
+  /// `Choose Date`
+  String get chooseDate {
+    return Intl.message('Choose Date', name: 'chooseDate', desc: '', args: []);
+  }
+
+  /// `Choose Time`
+  String get chooseTime {
+    return Intl.message('Choose Time', name: 'chooseTime', desc: '', args: []);
+  }
+
+  /// `Choose Event Location`
+  String get chooseEventLocation {
+    return Intl.message(
+      'Choose Event Location',
+      name: 'chooseEventLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Event Time`
+  String get eventTime {
+    return Intl.message('Event Time', name: 'eventTime', desc: '', args: []);
+  }
+
+  /// `Add Event`
+  String get addEvent {
+    return Intl.message('Add Event', name: 'addEvent', desc: '', args: []);
+  }
+
+  /// `Event Description`
+  String get eventDescription {
+    return Intl.message(
+      'Event Description',
+      name: 'eventDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Title`
+  String get title {
+    return Intl.message('Title', name: 'title', desc: '', args: []);
+  }
+
+  /// `Description`
+  String get describtion {
+    return Intl.message('Description', name: 'describtion', desc: '', args: []);
+  }
+
+  /// `Create Event`
+  String get CreateEvent {
+    return Intl.message(
+      'Create Event',
+      name: 'CreateEvent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Let’s Start`
   String get LetsStart {
     return Intl.message('Let’s Start', name: 'LetsStart', desc: '', args: []);

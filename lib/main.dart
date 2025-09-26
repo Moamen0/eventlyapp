@@ -2,6 +2,7 @@ import 'package:eventlyapp/Home%20Screen/home_screen.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/profile%20tab/profile_screen.dart';
 import 'package:eventlyapp/Providers/app_language_provider.dart';
 import 'package:eventlyapp/Providers/app_theme_provider.dart';
+import 'package:eventlyapp/add%20event/add_event_screen.dart';
 import 'package:eventlyapp/authentication/login/login_screen.dart';
 import 'package:eventlyapp/authentication/register/register_screen.dart';
 import 'package:eventlyapp/generated/l10n.dart';
@@ -38,7 +39,7 @@ class EventlyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      initialRoute: AppRoutes.onbording,
+      initialRoute: AppRoutes.addevent,
       routes: {
         AppRoutes.homescreen: (context) => HomeScreen(),
         AppRoutes.loginScreen: (context) => LoginScreen(),
@@ -46,6 +47,7 @@ class EventlyApp extends StatelessWidget {
         AppRoutes.profileTab: (context) => ProfileScreen(),
         AppRoutes.onbording: (context) => Intropage(),
         AppRoutes.introductionScreen: (context) => IntroductionScreen(),
+        AppRoutes.addevent: (context) => AddEventScreen(),
       },
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

@@ -23,18 +23,6 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> eventsName = [
-      S.of(context).all,
-      S.of(context).sport,
-      S.of(context).birthday,
-      S.of(context).meeting,
-      S.of(context).gaming,
-      S.of(context).workshop,
-      S.of(context).bookClub,
-      S.of(context).exhibition,
-      S.of(context).holiday,
-      S.of(context).eating
-    ];
     var languageProvider = Provider.of<AppLanguageProvider>(context);
     var themeProvider = Provider.of<AppThemeProvider>(context);
 

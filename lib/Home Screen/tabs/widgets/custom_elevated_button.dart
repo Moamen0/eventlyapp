@@ -12,7 +12,9 @@ class CustomElevatedButton extends StatelessWidget {
       this.textStyle,
       this.hasIcon = false,
       this.iconWidget,
-      this.mainAxisAlignment});
+      this.mainAxisAlignment,
+      this.padding,
+      this.iconWidgetSuf});
   final VoidCallback onPressed;
   final String text;
   final Color backgroundColor;
@@ -20,7 +22,9 @@ class CustomElevatedButton extends StatelessWidget {
   final TextStyle? textStyle;
   final bool hasIcon;
   final Widget? iconWidget;
+  final Widget? iconWidgetSuf;
   final MainAxisAlignment? mainAxisAlignment;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class CustomElevatedButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
           shadowColor: Colors.transparent,
-          padding: EdgeInsets.symmetric(vertical: height * 0.017),
+          padding: padding ?? EdgeInsets.symmetric(vertical: height * 0.017),
           backgroundColor: backgroundColor,
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -48,6 +52,11 @@ class CustomElevatedButton extends StatelessWidget {
                   text,
                   style: textStyle ?? AppStyle.medium20White,
                 ),
+                Spacer(),
+                iconWidgetSuf ?? SizedBox(),
+                SizedBox(
+                  width: width * 0.03,
+                )
               ],
             )
           : Text(

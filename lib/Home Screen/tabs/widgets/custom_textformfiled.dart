@@ -21,7 +21,8 @@ class CustomTextformfiled extends StatelessWidget {
       this.keyboardType = TextInputType.text,
       this.isObscured = false,
       required this.controller,
-      this.textStyle});
+      this.textStyle,
+      this.maxLines});
 
   Color? borderSideColor;
   Color focusedBorderSideColor;
@@ -38,10 +39,12 @@ class CustomTextformfiled extends StatelessWidget {
   bool isObscured;
   TextEditingController controller;
   TextStyle? textStyle;
+  int? maxLines ;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLines: maxLines,
         style: textStyle ?? Theme.of(context).textTheme.bodySmall,
         controller: controller,
         validator: validator,

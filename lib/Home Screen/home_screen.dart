@@ -4,6 +4,7 @@ import 'package:eventlyapp/Home%20Screen/tabs/map_tab/map_tab.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/profile%20tab/profile_screen.dart';
 import 'package:eventlyapp/generated/l10n.dart';
 import 'package:eventlyapp/utils/app_color.dart';
+import 'package:eventlyapp/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,7 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
             color: AppColor.primaryLightbgColor,
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed(AppRoutes.addevent);
+        },
         child: Icon(
           Icons.add,
           color: AppColor.primaryLightbgColor,

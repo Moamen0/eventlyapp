@@ -25,6 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ConnectwithFriendsShareMoments": MessageLookupByLibrary.simpleMessage(
       "Connect with Friends & Share Moments",
     ),
+    "CreateEvent": MessageLookupByLibrary.simpleMessage("Create Event"),
     "Effortless_Event_Planning": MessageLookupByLibrary.simpleMessage(
       "Effortless Event Planning",
     ),
@@ -35,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Personalize_Your_Experience": MessageLookupByLibrary.simpleMessage(
       "Personalize Your Experience",
     ),
+    "addEvent": MessageLookupByLibrary.simpleMessage("Add Event"),
     "alexandria": MessageLookupByLibrary.simpleMessage("Alexandria,Egypt"),
     "all": MessageLookupByLibrary.simpleMessage("All"),
     "already_have_account": MessageLookupByLibrary.simpleMessage(
@@ -43,14 +45,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "birthday": MessageLookupByLibrary.simpleMessage("Birthday"),
     "bookClub": MessageLookupByLibrary.simpleMessage("Book Club"),
+    "chooseDate": MessageLookupByLibrary.simpleMessage("Choose Date"),
+    "chooseEventLocation": MessageLookupByLibrary.simpleMessage(
+      "Choose Event Location",
+    ),
+    "chooseTime": MessageLookupByLibrary.simpleMessage("Choose Time"),
     "create_account": MessageLookupByLibrary.simpleMessage("Create Account"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
+    "describtion": MessageLookupByLibrary.simpleMessage("Description"),
     "dont_Have_account": MessageLookupByLibrary.simpleMessage(
       "Don’t Have Account ?",
     ),
     "eating": MessageLookupByLibrary.simpleMessage("Eating"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
+    "eventDate": MessageLookupByLibrary.simpleMessage("Event Date"),
+    "eventDescription": MessageLookupByLibrary.simpleMessage(
+      "Event Description",
+    ),
+    "eventTime": MessageLookupByLibrary.simpleMessage("Event Time"),
+    "eventTitle": MessageLookupByLibrary.simpleMessage("Event Title"),
     "exhibition": MessageLookupByLibrary.simpleMessage("Exhibition"),
     "favorite": MessageLookupByLibrary.simpleMessage("Favorite"),
     "forget_password": MessageLookupByLibrary.simpleMessage("Forget Password"),
@@ -59,6 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "home": MessageLookupByLibrary.simpleMessage("Home"),
     "language": MessageLookupByLibrary.simpleMessage("Language"),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
+    "location": MessageLookupByLibrary.simpleMessage("Location"),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
     "login_with_google": MessageLookupByLibrary.simpleMessage(
       "Login With Google",
@@ -90,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sport": MessageLookupByLibrary.simpleMessage("Sport"),
     "theme": MessageLookupByLibrary.simpleMessage("Theme"),
+    "title": MessageLookupByLibrary.simpleMessage("Title"),
     "welcome_back": MessageLookupByLibrary.simpleMessage("Welcome Back ✨"),
     "workshop": MessageLookupByLibrary.simpleMessage("WorkShop"),
   };

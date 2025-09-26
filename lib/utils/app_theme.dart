@@ -9,7 +9,12 @@ class AppTheme {
       canvasColor: AppColor.primaryLightColor,
       cardColor: AppColor.primaryLightbgColor,
       shadowColor: AppColor.grayColor,
+      splashColor: AppColor.whiteColor,
       hoverColor: AppColor.grayColor,
+  indicatorColor: AppColor.DarkColor,
+
+
+
       scaffoldBackgroundColor: AppColor.primaryLightbgColor,
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: AppColor.primaryLightColor,
@@ -34,6 +39,10 @@ class AppTheme {
                         cardColor: AppColor.primaryDarkColor,
                               shadowColor: AppColor.primaryLightColor,
                                     hoverColor: AppColor.whiteColor,
+                                          splashColor: AppColor.blackColor,
+                                            indicatorColor: AppColor.whiteColor,
+
+
 
 
 

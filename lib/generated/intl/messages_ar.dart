@@ -25,6 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ConnectwithFriendsShareMoments": MessageLookupByLibrary.simpleMessage(
       "تواصل مع الأصدقاء وشارك اللحظات",
     ),
+    "CreateEvent": MessageLookupByLibrary.simpleMessage("انشاء حدث"),
     "Effortless_Event_Planning": MessageLookupByLibrary.simpleMessage(
       "تخطيط فعاليات بسهولة",
     ),
@@ -35,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Personalize_Your_Experience": MessageLookupByLibrary.simpleMessage(
       "خصص تجربتك",
     ),
+    "addEvent": MessageLookupByLibrary.simpleMessage("اضافة حدث"),
     "alexandria": MessageLookupByLibrary.simpleMessage("الاسكندرية، مصر"),
     "all": MessageLookupByLibrary.simpleMessage("الكل"),
     "already_have_account": MessageLookupByLibrary.simpleMessage(
@@ -43,14 +45,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "birthday": MessageLookupByLibrary.simpleMessage("عيد ميلاد"),
     "bookClub": MessageLookupByLibrary.simpleMessage("نادي الكتب"),
+    "chooseDate": MessageLookupByLibrary.simpleMessage("اختر التاريخ"),
+    "chooseTime": MessageLookupByLibrary.simpleMessage("اختر الوقت"),
     "create_account": MessageLookupByLibrary.simpleMessage("انشئ حساب جديد"),
     "dark": MessageLookupByLibrary.simpleMessage("ليلي"),
+    "describtion": MessageLookupByLibrary.simpleMessage("الموضوع"),
     "dont_Have_account": MessageLookupByLibrary.simpleMessage(
       "ليس لديك حساب ؟",
     ),
     "eating": MessageLookupByLibrary.simpleMessage("المطاعم"),
     "email": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
     "english": MessageLookupByLibrary.simpleMessage("الانجليزية"),
+    "eventDate": MessageLookupByLibrary.simpleMessage("تاريخ الحدث"),
+    "eventDescription": MessageLookupByLibrary.simpleMessage("عنوان الحدث"),
+    "eventTime": MessageLookupByLibrary.simpleMessage("وقت الحدث"),
+    "eventTitle": MessageLookupByLibrary.simpleMessage("عنوان الحدث"),
     "exhibition": MessageLookupByLibrary.simpleMessage("المعارض"),
     "favorite": MessageLookupByLibrary.simpleMessage("المفضلة"),
     "forget_password": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور"),
@@ -59,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "home": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
     "language": MessageLookupByLibrary.simpleMessage("اللغة"),
     "light": MessageLookupByLibrary.simpleMessage("نهاري"),
+    "location": MessageLookupByLibrary.simpleMessage("المكان"),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "login_with_google": MessageLookupByLibrary.simpleMessage(
       "تسجيل الدخول باستخدام جوجل",
@@ -92,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search_for_event": MessageLookupByLibrary.simpleMessage("ابحث عن حدث"),
     "sport": MessageLookupByLibrary.simpleMessage("رياضة"),
     "theme": MessageLookupByLibrary.simpleMessage("السمة"),
+    "title": MessageLookupByLibrary.simpleMessage("العنوان"),
     "welcome_back": MessageLookupByLibrary.simpleMessage("✨ مرحبًا بعودتك"),
     "workshop": MessageLookupByLibrary.simpleMessage("الورش"),
   };
