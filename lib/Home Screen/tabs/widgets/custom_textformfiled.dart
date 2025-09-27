@@ -44,7 +44,7 @@ class CustomTextformfiled extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      maxLines: maxLines,
+      maxLines: isObscured ? 1 : maxLines ,
         style: textStyle ?? Theme.of(context).textTheme.bodySmall,
         controller: controller,
         validator: validator,

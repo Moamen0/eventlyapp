@@ -14,7 +14,8 @@ class CustomElevatedButton extends StatelessWidget {
       this.iconWidget,
       this.mainAxisAlignment,
       this.padding,
-      this.iconWidgetSuf});
+      this.iconWidgetSuf,
+      this.hasSuffix = false});
   final VoidCallback onPressed;
   final String text;
   final Color backgroundColor;
@@ -25,6 +26,7 @@ class CustomElevatedButton extends StatelessWidget {
   final Widget? iconWidgetSuf;
   final MainAxisAlignment? mainAxisAlignment;
   final EdgeInsetsGeometry? padding;
+  final bool hasSuffix;
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +54,13 @@ class CustomElevatedButton extends StatelessWidget {
                   text,
                   style: textStyle ?? AppStyle.medium20White,
                 ),
-                Spacer(),
-                iconWidgetSuf ?? SizedBox(),
+                if (hasSuffix) ...[
+                  Spacer(),
+                  iconWidgetSuf ?? SizedBox(),
+                ],
                 SizedBox(
                   width: width * 0.03,
-                )
+                ),
               ],
             )
           : Text(

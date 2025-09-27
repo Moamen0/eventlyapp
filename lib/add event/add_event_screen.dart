@@ -185,6 +185,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       //todo location
                     },
                     hasIcon: true,
+                    hasSuffix: true,
                     backgroundColor: Colors.transparent,
                     iconWidget: Container(
                       margin: EdgeInsets.symmetric(horizontal: width * 0.03),

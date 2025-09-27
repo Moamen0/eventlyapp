@@ -43,7 +43,7 @@ class EventlyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      initialRoute: AppRoutes.homescreen,
+      initialRoute: AppRoutes.onbording,
       routes: {
         AppRoutes.homescreen: (context) => HomeScreen(),
         AppRoutes.loginScreen: (context) => LoginScreen(),

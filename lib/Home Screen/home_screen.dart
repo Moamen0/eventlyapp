@@ -57,8 +57,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  BottomNavigationBar _buildBottomNavBar() {
-    return BottomNavigationBar(
+ Theme _buildBottomNavBar() {
+  return Theme(
+    data: Theme.of(context).copyWith(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+    ),
+    child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
         currentIndex: selectedIndex,
         onTap: _onTab,
         items: [
@@ -79,6 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(
                   selectedIndex == 3 ? Icons.person : Icons.person_outline),
               label: S.of(context).profile)
-        ]);
-  }
+        ]),
+  );
 }
+  }
+
