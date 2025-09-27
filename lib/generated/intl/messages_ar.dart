@@ -46,6 +46,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "birthday": MessageLookupByLibrary.simpleMessage("عيد ميلاد"),
     "bookClub": MessageLookupByLibrary.simpleMessage("نادي الكتب"),
     "chooseDate": MessageLookupByLibrary.simpleMessage("اختر التاريخ"),
+    "chooseEventLocation": MessageLookupByLibrary.simpleMessage(
+      "اختر مكان الحدث",
+    ),
     "chooseTime": MessageLookupByLibrary.simpleMessage("اختر الوقت"),
     "create_account": MessageLookupByLibrary.simpleMessage("انشئ حساب جديد"),
     "dark": MessageLookupByLibrary.simpleMessage("ليلي"),

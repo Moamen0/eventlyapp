@@ -158,7 +158,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                           : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
                       onChooseEventDateOrTime: chooseDate),
                   SizedBox(
-                    height: height * 0.02,
+                    height: height * 0.01,
                   ),
                   AddTime_date(
                     iconPath: AppAssets.timeIcon,
@@ -188,12 +188,13 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     backgroundColor: Colors.transparent,
                     iconWidget: Container(
                       margin: EdgeInsets.symmetric(horizontal: width * 0.03),
-                      padding: EdgeInsets.all(15),
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                           color: AppColor.primaryLightColor,
                           borderRadius: BorderRadius.circular(8)),
                       child: Icon(
                         Icons.my_location_outlined,
+                        size: 29,
                         color: Theme.of(context).splashColor,
                       ),
                     ),
