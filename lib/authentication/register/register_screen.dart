@@ -13,7 +13,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({super.key});
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _LoginScreenState();
@@ -189,13 +189,13 @@ class _LoginScreenState extends State<RegisterScreen> {
                         TextButton(
                             style: ButtonStyle(
                               overlayColor:
-                                  MaterialStateProperty.all(Colors.transparent),
+                                  WidgetStateProperty.all(Colors.transparent),
                             ),
                             onPressed: () {
                               Navigator.pop(context);
                             },
                             child: Text(
-                              "${S.of(context).login}",
+                              S.of(context).login,
                               style: AppStyle.Bold16PrimaryItalicUL,
                             )),
                       ],

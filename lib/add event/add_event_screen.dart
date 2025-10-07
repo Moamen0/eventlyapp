@@ -4,10 +4,11 @@ import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_elevated_button.dar
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_textformfiled.dart';
 import 'package:eventlyapp/add%20event/widget/add_Time&Date.dart';
 import 'package:eventlyapp/generated/l10n.dart';
+import 'package:eventlyapp/model/event.dart';
 import 'package:eventlyapp/utils/app_assets.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_style.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:eventlyapp/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -24,7 +25,10 @@ class _AddEventScreenState extends State<AddEventScreen> {
   TextEditingController describtionController = TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? selectTime;
-  String? formatTime;
+  String formatTime = "";
+  String formatDate = "";
+  String selectEventName = "";
+  String selectEventImage = "";
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -248,6 +252,19 @@ class _AddEventScreenState extends State<AddEventScreen> {
   void addEvent() {
     if (formKey.currentState?.validate() == true) {
       //todo add event to firestore
+      EventModel event = EventModel(
+          eventName: selectEventName,
+          eventTitle: titleController.text,
+          eventDescribtion: describtionController.text,
+          eventImage: selectEventImage,
+          eventDateTime: selectedDate!,
+          eventTime: formatTime);
+      FirebaseUtils.addEventToFireStore(event).timeout(
+        Duration(seconds: 1),
+        onTimeout: () {
+          print("Event added successfully");
+        },
+      );
     }
   }
 }

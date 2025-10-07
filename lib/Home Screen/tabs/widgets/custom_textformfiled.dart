@@ -1,5 +1,4 @@
 import 'package:eventlyapp/utils/app_color.dart';
-import 'package:eventlyapp/utils/app_style.dart';
 import 'package:flutter/material.dart';
 
 typedef onValidator = String? Function(String?)?;

@@ -2,7 +2,7 @@ import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/category_item.dart
 import 'package:flutter/material.dart';
 
 class EventTabItem extends StatelessWidget {
-  EventTabItem({
+  const EventTabItem({
     super.key,
     required this.isSelected,
     required this.selectedBgColor,

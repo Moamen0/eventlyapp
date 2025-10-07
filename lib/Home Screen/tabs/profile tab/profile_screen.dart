@@ -9,7 +9,6 @@ import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_routes.dart';
 import 'package:eventlyapp/utils/app_style.dart';
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {

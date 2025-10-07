@@ -1,4 +1,3 @@
-import 'package:eventlyapp/Providers/app_language_provider.dart';
 import 'package:eventlyapp/Providers/app_theme_provider.dart';
 import 'package:eventlyapp/generated/l10n.dart';
 import 'package:eventlyapp/utils/app_color.dart';

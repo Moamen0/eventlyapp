@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 class EventItem extends StatefulWidget {
-  EventItem({super.key});
+  const EventItem({super.key});
 
   @override
   State<EventItem> createState() => _EventItemState();

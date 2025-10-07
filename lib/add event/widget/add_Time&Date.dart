@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AddTime_date extends StatelessWidget {
-  AddTime_date(
+  const AddTime_date(
       {super.key,
       required this.iconPath,
       required this.text,

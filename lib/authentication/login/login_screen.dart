@@ -12,7 +12,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                             style: ButtonStyle(
                               overlayColor:
-                                  MaterialStateProperty.all(Colors.transparent),
+                                  WidgetStateProperty.all(Colors.transparent),
                             ),
                             onPressed: () {},
                             child: Text(
@@ -149,14 +149,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                             style: ButtonStyle(
                               overlayColor:
-                                  MaterialStateProperty.all(Colors.transparent),
+                                  WidgetStateProperty.all(Colors.transparent),
                             ),
                             onPressed: () {
                               Navigator.of(context)
                                   .pushNamed(AppRoutes.registerScreen);
                             },
                             child: Text(
-                              "${S.of(context).create_account}",
+                              S.of(context).create_account,
                               style: AppStyle.Bold16PrimaryItalicUL,
                             )),
                       ],

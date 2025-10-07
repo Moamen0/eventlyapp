@@ -7,7 +7,7 @@ class MapTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         height: double.infinity,
         child: Image.asset(AppAssets.map),
