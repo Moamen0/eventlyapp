@@ -13,6 +13,8 @@
   "bookClub": "نادي الكتب",
   "exhibition": "المعارض",
   "holiday": "العطلات",
+      "no_event_found": "لا يوجد احداث حاليه",
+
   "eating": "المطاعم",
   "login": "تسجيل الدخول",
   "forget_password": "نسيت كلمة المرور",

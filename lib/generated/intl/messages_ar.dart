@@ -80,6 +80,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "map": MessageLookupByLibrary.simpleMessage("الخريطة"),
     "meeting": MessageLookupByLibrary.simpleMessage("الاجتماعات"),
     "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+    "no_event_found": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد احداث حاليه",
+    ),
     "obBoarding1dc": MessageLookupByLibrary.simpleMessage(
       "اختر السمة واللغة المفضلة لديك لبدء تجربة مريحة ومصممة خصيصًا تناسب أسلوبك.",
     ),

@@ -1,12 +1,13 @@
-import 'package:eventlyapp/utils/app_assets.dart';
+import 'package:eventlyapp/model/event.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:intl/intl.dart';
 
 class EventItem extends StatefulWidget {
-  const EventItem({super.key});
-
+  const EventItem({super.key, required this.event});
+  final EventModel event;
   @override
   State<EventItem> createState() => _EventItemState();
 }
@@ -29,7 +30,7 @@ class _EventItemState extends State<EventItem> {
         image: DecorationImage(
           fit: BoxFit.fill,
           image: AssetImage(
-            AppAssets.meetingimage,
+            widget.event.eventImage, 
           ),
         ),
       ),
@@ -48,11 +49,11 @@ class _EventItemState extends State<EventItem> {
                 child: Column(
                   children: [
                     Text(
-                      "22",
+                      widget.event.eventDateTime.day.toString(),
                       style: AppStyle.bold20Primary,
                     ),
                     Text(
-                      "Sep",
+                      DateFormat("MMM").format(widget.event.eventDateTime),
                       style: AppStyle.bold14Primarylight,
                     ),
                   ],
@@ -61,7 +62,7 @@ class _EventItemState extends State<EventItem> {
             ),
             Container(
               padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.03, vertical: height * 0.006),
+                  horizontal: width * 0.03, vertical: height * 0.004),
               decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(8)),
@@ -70,7 +71,7 @@ class _EventItemState extends State<EventItem> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Meeting for Updating The Development Method ",
+                      widget.event.eventTitle,
                       style: Theme.of(context).textTheme.titleMedium,
                       softWrap: true,
                       overflow: TextOverflow.visible,
@@ -85,9 +86,7 @@ class _EventItemState extends State<EventItem> {
                       },
                       icon: Icon(
                         isLiked ? Clarity.heart_solid : Clarity.heart_line,
-                        color: isLiked
-                            ? AppColor.primaryLightColor
-                            : AppColor.primaryLightColor,
+                        color: AppColor.primaryLightColor,
                       ))
                 ],
               ),

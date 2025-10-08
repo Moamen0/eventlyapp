@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 class FavoriteTab extends StatelessWidget {
-   FavoriteTab({super.key});
+  FavoriteTab({super.key});
 
   TextEditingController searchController = TextEditingController();
 
@@ -32,7 +32,7 @@ class FavoriteTab extends StatelessWidget {
               child: ListView.separated(
                   padding: EdgeInsets.only(top: height * 0.02),
                   itemBuilder: (context, index) {
-                    return EventItem();
+                    return Container();
                   },
                   separatorBuilder: (context, index) {
                     return SizedBox(

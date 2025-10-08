@@ -82,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "map": MessageLookupByLibrary.simpleMessage("Map"),
     "meeting": MessageLookupByLibrary.simpleMessage("Meeting"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
+    "no_event_found": MessageLookupByLibrary.simpleMessage("No Event Found"),
     "obBoarding1dc": MessageLookupByLibrary.simpleMessage(
       "Choose your preferred theme and language to get started with a comfortable, tailored experience that suits your style.",
     ),

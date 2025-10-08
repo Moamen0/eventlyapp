@@ -3,6 +3,7 @@ import 'package:eventlyapp/Home%20Screen/home_screen.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/profile%20tab/profile_screen.dart';
 import 'package:eventlyapp/Providers/app_language_provider.dart';
 import 'package:eventlyapp/Providers/app_theme_provider.dart';
+import 'package:eventlyapp/Providers/event_list.dart';
 import 'package:eventlyapp/add%20event/add_event_screen.dart';
 import 'package:eventlyapp/authentication/login/login_screen.dart';
 import 'package:eventlyapp/authentication/register/register_screen.dart';
@@ -28,7 +29,8 @@ void main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AppLanguageProvider()),
-    ChangeNotifierProvider(create: (context) => AppThemeProvider())
+    ChangeNotifierProvider(create: (context) => AppThemeProvider()),
+    ChangeNotifierProvider(create: (context) => EventListProvider())
   ], child: EventlyApp()));
 }
 

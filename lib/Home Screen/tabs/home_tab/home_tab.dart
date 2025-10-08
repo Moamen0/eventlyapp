@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/home_tab/event_item.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/category_item.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/event_tab_item.dart';
 import 'package:eventlyapp/Providers/app_language_provider.dart';
 import 'package:eventlyapp/Providers/app_theme_provider.dart';
+import 'package:eventlyapp/Providers/event_list.dart';
 import 'package:eventlyapp/generated/l10n.dart';
+import 'package:eventlyapp/model/event.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_style.dart';
+import 'package:eventlyapp/utils/firebase_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +24,28 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   int selectedIndex = 0;
+  late EventListProvider eventListProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        eventListProvider.getEventCollections();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     var languageProvider = Provider.of<AppLanguageProvider>(context);
     var themeProvider = Provider.of<AppThemeProvider>(context);
+    eventListProvider = Provider.of<EventListProvider>(context);
 
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -145,20 +163,30 @@ class _HomeTabState extends State<HomeTab> {
             ),
           ),
           Expanded(
-              child: ListView.separated(
-                  padding: EdgeInsets.only(top: height * 0.02),
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: width * 0.03),
-                      child: EventItem(),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      height: height * 0.01,
-                    );
-                  },
-                  itemCount: 20))
+              child: eventListProvider.eventList.isEmpty
+                  ? Center(
+                      child: Text(
+                        S.of(context).no_event_found,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: EdgeInsets.only(top: height * 0.02),
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: width * 0.03),
+                          child: EventItem(
+                            event: eventListProvider.eventList[index],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return SizedBox(
+                          height: height * 0.01,
+                        );
+                      },
+                      itemCount: eventListProvider.eventList.length))
         ],
       ),
     );

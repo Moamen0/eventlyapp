@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/category_item.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/event_tab_item.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_elevated_button.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_textformfiled.dart';
+import 'package:eventlyapp/Providers/event_list.dart';
 import 'package:eventlyapp/add%20event/widget/add_Time&Date.dart';
 import 'package:eventlyapp/generated/l10n.dart';
 import 'package:eventlyapp/model/event.dart';
@@ -11,6 +13,7 @@ import 'package:eventlyapp/utils/app_style.dart';
 import 'package:eventlyapp/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});
@@ -31,14 +34,28 @@ class _AddEventScreenState extends State<AddEventScreen> {
   String selectEventImage = "";
   var formKey = GlobalKey<FormState>();
 
+  List<String> eventImageList = [
+    AppAssets.sportEvent,
+    AppAssets.birthdayEvent,
+    AppAssets.meetingimage,
+    AppAssets.gamingEvent,
+    AppAssets.workshopEvent,
+    AppAssets.bookclubEvent,
+    AppAssets.bexhibitionEvent,
+    AppAssets.holidayEvent,
+    AppAssets.eatingEvent,
+  ];
+
+  late EventListProvider eventListProvider;
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
     final categories = CategoryModel.getCategories(context);
 
     final selectedCategory = categories[selectedIndex];
+    eventListProvider = Provider.of<EventListProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,16 +81,14 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(16)),
                 width: double.infinity,
-                child: selectedCategory.imagePath != null
+                child: eventImageList[selectedIndex].isEmpty
                     ? Image.asset(
-                        selectedCategory.imagePath!,
+                        eventImageList[selectedIndex],
                         fit: BoxFit.cover,
                         cacheWidth: (width * 0.94).round(),
                         cacheHeight: (height * 0.25).round(),
-                        errorBuilder: (context, error, stackTrace) =>
-                            Icon(selectedCategory.iconData, size: 50),
                       )
-                    : const SizedBox.shrink(),
+                    : const SizedBox(),
               ),
               SizedBox(
                 height: height * 0.02,
@@ -84,9 +99,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       labelPadding:
                           EdgeInsets.symmetric(horizontal: width * 0.02),
                       onTap: (index) {
-                        setState(() {
-                          selectedIndex = index;
-                        });
+                        setState(() {});
                       },
                       isScrollable: true,
                       indicatorColor: Colors.transparent,
@@ -263,8 +276,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
         Duration(seconds: 1),
         onTimeout: () {
           print("Event added successfully");
+          eventListProvider.getEventCollections();
+          Navigator.pop(context);
         },
       );
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    eventListProvider.getEventCollections();
   }
 }

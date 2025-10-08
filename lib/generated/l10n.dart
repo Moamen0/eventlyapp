@@ -285,6 +285,16 @@ class S {
     return Intl.message('Or', name: 'or', desc: '', args: []);
   }
 
+  /// `No Event Found`
+  String get no_event_found {
+    return Intl.message(
+      'No Event Found',
+      name: 'no_event_found',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Location`
   String get location {
     return Intl.message('Location', name: 'location', desc: '', args: []);
