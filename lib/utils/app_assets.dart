@@ -7,7 +7,7 @@ class AppAssets {
   static const String onbording3 = "assets/images/onbording3.png";
   static const String onbording4 = "assets/images/onbording4.png";
   static const String onbordinglogo = "assets/images/onbordinglogo.png";
-  static const String eventLogo = "assets/images/Logo.png";
+  static const String eventLogo = "assets/images/Logo1.png";
   static const String googlelogo = "assets/images/super g.png";
   static const String map = "assets/images/map.png";
   static const String birthdayEvent = "assets/images/birthday.png";

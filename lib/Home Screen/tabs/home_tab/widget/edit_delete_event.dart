@@ -15,17 +15,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-class AddEventScreen extends StatefulWidget {
-  const AddEventScreen({super.key});
+class EditEventScreen extends StatefulWidget {
+  final EventModel event;
+
+  const EditEventScreen({super.key, required this.event});
 
   @override
-  State<AddEventScreen> createState() => _AddEventScreenState();
+  State<EditEventScreen> createState() => _EditEventScreenState();
 }
 
-class _AddEventScreenState extends State<AddEventScreen> {
+class _EditEventScreenState extends State<EditEventScreen> {
   int selectedIndex = 0;
-  TextEditingController titleController = TextEditingController();
-  TextEditingController describtionController = TextEditingController();
+  late TextEditingController titleController;
+  late TextEditingController describtionController;
   DateTime? selectedDate;
   TimeOfDay? selectTime;
   String formatTime = "";
@@ -46,15 +48,59 @@ class _AddEventScreenState extends State<AddEventScreen> {
   ];
 
   late EventListProvider eventListProvider;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    titleController = TextEditingController(text: widget.event.eventTitle);
+    describtionController =
+        TextEditingController(text: widget.event.eventDescribtion);
+    selectedDate = widget.event.eventDateTime;
+    formatTime = widget.event.eventTime;
+    selectEventImage = widget.event.eventImage;
+
+    try {
+      final timeParts = widget.event.eventTime.split(':');
+      if (timeParts.length >= 2) {
+        int hour = int.parse(timeParts[0]);
+        int minute = int.parse(timeParts[1].split(' ')[0]);
+
+        if (widget.event.eventTime.toLowerCase().contains('pm') && hour != 12) {
+          hour += 12;
+        } else if (widget.event.eventTime.toLowerCase().contains('am') &&
+            hour == 12) {
+          hour = 0;
+        }
+
+        selectTime = TimeOfDay(hour: hour, minute: minute);
+      }
+    } catch (e) {
+      selectTime = TimeOfDay.now();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      final categories = CategoryModel.getCategories(context);
+      selectedIndex = categories
+          .indexWhere((category) => category.id == widget.event.categoryId);
+      if (selectedIndex == -1) selectedIndex = 0;
+
+      _isInitialized = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    final allCategories = CategoryModel.getCategoriesWithAll(context);
-    final categories = allCategories.skip(1).toList(); 
-
+    final categories = CategoryModel.getCategories(context);
     final selectedCategory = categories[selectedIndex];
     eventListProvider = Provider.of<EventListProvider>(context);
 
@@ -65,9 +111,19 @@ class _AddEventScreenState extends State<AddEventScreen> {
         iconTheme: IconThemeData(color: AppColor.primaryLightColor),
         backgroundColor: Colors.transparent,
         title: Text(
-          S.of(context).CreateEvent,
+          'Edit Event',
           style: AppStyle.reglur22Primary,
         ),
+        actions: [
+          IconButton(
+            onPressed: () => _showDeleteConfirmation(context),
+            icon: Icon(
+              Icons.delete_outline,
+              color: Colors.red,
+              size: 28,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
           child: Padding(
@@ -96,6 +152,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               ),
               DefaultTabController(
                   length: categories.length,
+                  initialIndex: selectedIndex,
                   child: TabBar(
                       labelPadding:
                           EdgeInsets.symmetric(horizontal: width * 0.02),
@@ -184,7 +241,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     text: S.of(context).eventTime,
                     choose_timeOrdate: selectTime == null
                         ? S.of(context).chooseTime
-                        : formatTime!,
+                        : formatTime,
                     onChooseEventDateOrTime: chooseTime,
                   ),
                   SizedBox(
@@ -229,8 +286,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     height: height * 0.02,
                   ),
                   CustomElevatedButton(
-                    onPressed: addEvent,
-                    text: S.of(context).addEvent,
+                    onPressed: updateEvent,
+                    text: 'Update Event',
                   )
                 ],
               ),
@@ -248,48 +305,112 @@ class _AddEventScreenState extends State<AddEventScreen> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
       initialDate: selectedDate ?? DateTime.now(),
     );
-    selectedDate = pickedDate;
-    setState(() {});
+    if (pickedDate != null) {
+      selectedDate = pickedDate;
+      setState(() {});
+    }
   }
 
   void chooseTime() async {
     var pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: selectTime ?? TimeOfDay.now(),
     );
-    selectTime = pickedTime;
-    if (selectTime != null) {
+    if (pickedTime != null) {
+      selectTime = pickedTime;
       formatTime = selectTime!.format(context);
+      setState(() {});
     }
-    setState(() {});
   }
 
-void addEvent() {
-  if (formKey.currentState?.validate() == true) {
-    final categories = CategoryModel.getCategories(context);
+  void updateEvent() {
+    if (formKey.currentState?.validate() == true) {
+      final categories = CategoryModel.getCategories(context);
 
-    EventModel event = EventModel(
-        categoryId: categories[selectedIndex].id, 
-        eventTitle: titleController.text,
-        eventDescribtion: describtionController.text,
-        eventImage: selectEventImage = eventImageList[selectedIndex],
-        eventDateTime: selectedDate!,
-        eventTime: formatTime);
-        
-    FirebaseUtils.addEventToFireStore(event).timeout(
+      EventModel updatedEvent = EventModel(
+          id: widget.event.id,
+          categoryId: categories[selectedIndex].id,
+          eventTitle: titleController.text,
+          eventDescribtion: describtionController.text,
+          eventImage: eventImageList[selectedIndex],
+          eventDateTime: selectedDate!,
+          eventTime: formatTime);
+
+      FirebaseUtils.updateEventInFireStore(updatedEvent).timeout(
+        Duration(seconds: 1),
+        onTimeout: () {
+          print("Event updated successfully");
+          eventListProvider.getEventCollections();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('✅ Event updated successfully!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+          Navigator.pop(context);
+        },
+      );
+    }
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Delete Event'),
+          content: Text(
+            'Are you sure you want to delete "${widget.event.eventTitle}"? This action cannot be undone.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext); // Close dialog only
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext); // Close dialog
+                _deleteEvent(); // This will handle navigation to home
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteEvent() {
+    FirebaseUtils.deleteEventFromFireStore(widget.event.id!).timeout(
       Duration(seconds: 1),
       onTimeout: () {
-        print("Event added successfully");
+        print("Event deleted successfully");
         eventListProvider.getEventCollections();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('🗑️ Event deleted successfully!'),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
         Navigator.pop(context);
       },
     );
   }
-}
 
   @override
   void dispose() {
+    titleController.dispose();
+    describtionController.dispose();
     super.dispose();
-    eventListProvider.getEventCollections();
   }
 }

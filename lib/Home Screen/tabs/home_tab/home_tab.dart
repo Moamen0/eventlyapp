@@ -28,11 +28,13 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         eventListProvider.getEventCollections();
+        eventListProvider.filterEventsByCategory(0, context);
+        
+        setState(() {}); // Refresh UI after fetching events
       },
     );
   }
@@ -41,10 +43,12 @@ class _HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     var languageProvider = Provider.of<AppLanguageProvider>(context);
     var themeProvider = Provider.of<AppThemeProvider>(context);
-    eventListProvider = Provider.of<EventListProvider>(context);
+    eventListProvider = Provider.of<EventListProvider>(context, listen: false);
 
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+
+    final categories = CategoryModel.getCategoriesWithAll(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -70,6 +74,16 @@ class _HomeTabState extends State<HomeTab> {
             ),
             Row(
               children: [
+                // Sort button
+                IconButton(
+                  onPressed: () {
+                    _showSortDialog(context);
+                  },
+                  icon: Icon(
+                    Icons.sort,
+                    color: AppColor.primaryLightbgColor,
+                  ),
+                ),
                 IconButton(
                   onPressed: () {
                     themeProvider.toggleTheme();
@@ -136,23 +150,26 @@ class _HomeTabState extends State<HomeTab> {
                   height: height * 0.02,
                 ),
                 DefaultTabController(
-                    length: CategoryModel.getCategoriesWithAll(context).length,
+                    length: categories.length,
                     child: TabBar(
                         labelPadding:
                             EdgeInsets.symmetric(horizontal: width * 0.02),
                         onTap: (index) {
+                          print(
+                              "🔵 Tab clicked: $index (${categories[index].name})");
                           selectedIndex = index;
+                          eventListProvider.filterEventsByCategory(
+                              index, context);
                           setState(() {});
                         },
                         isScrollable: true,
                         indicatorColor: Colors.transparent,
                         dividerColor: Colors.transparent,
                         tabAlignment: TabAlignment.start,
-                        tabs: CategoryModel.getCategoriesWithAll(context)
+                        tabs: categories
                             .map((category) => EventTabItem(
                                 isSelected: selectedIndex ==
-                                    CategoryModel.getCategoriesWithAll(context)
-                                        .indexOf(category),
+                                    categories.indexOf(category),
                                 selectedBgColor: Theme.of(context).focusColor,
                                 selectedFgColor: Theme.of(context).canvasColor,
                                 unSelectedBgColor: Colors.transparent,
@@ -162,33 +179,120 @@ class _HomeTabState extends State<HomeTab> {
               ],
             ),
           ),
-          Expanded(
-              child: eventListProvider.eventList.isEmpty
-                  ? Center(
-                      child: Text(
-                        S.of(context).no_event_found,
-                        style: Theme.of(context).textTheme.headlineLarge,
-                      ),
-                    )
-                  : ListView.separated(
-                      padding: EdgeInsets.only(top: height * 0.02),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: width * 0.03),
-                          child: EventItem(
-                            event: eventListProvider.eventList[index],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(
-                          height: height * 0.01,
-                        );
-                      },
-                      itemCount: eventListProvider.eventList.length))
+          Consumer<EventListProvider>(
+            builder: (context, provider, child) {
+              return Expanded(
+                child: provider.filterEventList.isEmpty
+                    ? Center(
+                        child: Text(
+                          S.of(context).no_event_found,
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: EdgeInsets.only(top: height * 0.02),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding:
+                                EdgeInsets.symmetric(horizontal: width * 0.03),
+                            child: EventItem(
+                              event: provider.filterEventList[index],
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            height: height * 0.01,
+                          );
+                        },
+                        itemCount: provider.filterEventList.length),
+              );
+            },
+          )
         ],
       ),
+    );
+  }
+
+  void _showSortDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return Consumer<EventListProvider>(
+          builder: (context, provider, child) {
+            return AlertDialog(
+              title: Text(
+                'Sort Events',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildSortOption(
+                    dialogContext,
+                    'Date (Oldest First)',
+                    SortOption.dateAscending,
+                    Icons.arrow_upward,
+                    provider,
+                  ),
+                  _buildSortOption(
+                    dialogContext,
+                    'Date (Newest First)',
+                    SortOption.dateDescending,
+                    Icons.arrow_downward,
+                    provider,
+                  ),
+                  _buildSortOption(
+                    dialogContext,
+                    'Title (A-Z)',
+                    SortOption.titleAZ,
+                    Icons.sort_by_alpha,
+                    provider,
+                  ),
+                  _buildSortOption(
+                    dialogContext,
+                    'Title (Z-A)',
+                    SortOption.titleZA,
+                    Icons.sort_by_alpha,
+                    provider,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildSortOption(
+    BuildContext context,
+    String title,
+    SortOption option,
+    IconData icon,
+    EventListProvider provider,
+  ) {
+    final isSelected = provider.currentSortOption == option;
+
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isSelected ? AppColor.primaryLightColor : Colors.grey,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isSelected ? AppColor.primaryLightColor : null,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      trailing: isSelected
+          ? Icon(Icons.check, color: AppColor.primaryLightColor)
+          : null,
+      onTap: () {
+        provider.setSortOption(option);
+        Navigator.pop(context);
+      },
     );
   }
 }
