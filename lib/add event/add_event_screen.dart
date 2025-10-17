@@ -4,6 +4,7 @@ import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/event_tab_item.dar
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_elevated_button.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_textformfiled.dart';
 import 'package:eventlyapp/Providers/event_list.dart';
+import 'package:eventlyapp/Providers/user_provider.dart';
 import 'package:eventlyapp/add%20event/widget/add_Time&Date.dart';
 import 'package:eventlyapp/generated/l10n.dart';
 import 'package:eventlyapp/model/event.dart';
@@ -46,6 +47,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   ];
 
   late EventListProvider eventListProvider;
+  late UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +55,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
     var width = MediaQuery.of(context).size.width;
 
     final allCategories = CategoryModel.getCategoriesWithAll(context);
-    final categories = allCategories.skip(1).toList(); 
+    final categories = allCategories.skip(1).toList();
 
     final selectedCategory = categories[selectedIndex];
     eventListProvider = Provider.of<EventListProvider>(context);
+    userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -264,32 +267,54 @@ class _AddEventScreenState extends State<AddEventScreen> {
     setState(() {});
   }
 
-void addEvent() {
-  if (formKey.currentState?.validate() == true) {
-    final categories = CategoryModel.getCategories(context);
+  void addEvent() {
+    if (formKey.currentState?.validate() == true) {
+      final categories = CategoryModel.getCategories(context);
 
-    EventModel event = EventModel(
-        categoryId: categories[selectedIndex].id, 
-        eventTitle: titleController.text,
-        eventDescribtion: describtionController.text,
-        eventImage: selectEventImage = eventImageList[selectedIndex],
-        eventDateTime: selectedDate!,
-        eventTime: formatTime);
-        
-    FirebaseUtils.addEventToFireStore(event).timeout(
-      Duration(seconds: 1),
-      onTimeout: () {
-        print("Event added successfully");
-        eventListProvider.getEventCollections();
-        Navigator.pop(context);
-      },
-    );
+      EventModel event = EventModel(
+          categoryId: categories[selectedIndex].id,
+          eventTitle: titleController.text,
+          eventDescribtion: describtionController.text,
+          eventImage: selectEventImage = eventImageList[selectedIndex],
+          eventDateTime: selectedDate!,
+          eventTime: formatTime);
+
+      FirebaseUtils.addEventToFireStore(event ,userProvider.currentUser?.id?? "" ).then(
+        (value) {
+          print("Event added successfully");
+          eventListProvider.getEventCollections(userProvider.currentUser?.id ?? '');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('✅ Event added successfully!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 1),
+            ),
+          );
+          Navigator.pop(context);
+        },
+      );
+
+      // timeout(
+      //   Duration(seconds: 1),
+      //   onTimeout: () {
+      //     print("Event added successfully");
+      //     eventListProvider.getEventCollections();
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(
+      //         content: Text('✅ Event added successfully!'),
+      //         backgroundColor: Colors.green,
+      //         duration: Duration(seconds: 1),
+      //       ),
+      //     );
+      //     Navigator.pop(context);
+      //   },
+      // );
+    }
   }
-}
 
   @override
   void dispose() {
     super.dispose();
-    eventListProvider.getEventCollections();
+    eventListProvider.getEventCollections(userProvider.currentUser?.id ?? '');
   }
 }

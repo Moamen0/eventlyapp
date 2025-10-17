@@ -3,12 +3,16 @@ import 'package:eventlyapp/Home%20Screen/tabs/profile%20tab/language/language_bu
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_elevated_button.dart';
 import 'package:eventlyapp/Providers/app_language_provider.dart';
 import 'package:eventlyapp/Providers/app_theme_provider.dart';
+import 'package:eventlyapp/Providers/user_provider.dart';
+import 'package:eventlyapp/authentication/google_sign_in.dart';
 import 'package:eventlyapp/generated/l10n.dart';
 import 'package:eventlyapp/utils/app_assets.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_routes.dart';
 import 'package:eventlyapp/utils/app_style.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -25,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var width = MediaQuery.of(context).size.width;
     var languageProvider = Provider.of<AppLanguageProvider>(context);
     var themeProvider = Provider.of<AppThemeProvider>(context);
+    var userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -38,18 +43,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(
               width: width * .04,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Route Academy",
-                  style: AppStyle.bold24White,
-                ),
-                Text(
-                  "Route@gmail.com",
-                  style: AppStyle.bold16White,
-                )
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userProvider.currentUser?.name ?? "",
+                    style: AppStyle.bold24White,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    userProvider.currentUser?.email ?? "",
+                    style: AppStyle.bold16White,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    width: width * 0.08,
+                  )
+                ],
+              ),
             )
           ],
         ),
@@ -135,12 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Spacer(),
             CustomElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.loginScreen,
-                  (route) => false,
-                );
-              },
+              onPressed: logout,
               text: S.of(context).logout,
               textStyle: AppStyle.bold20White,
               backgroundColor: AppColor.logoutColor,
@@ -160,6 +167,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      // Sign out from Google
+      GoogleSignInService googleSignInService = GoogleSignInService();
+      await googleSignInService.signOut();
+      // Clear user provider
+      if (mounted) {
+        Provider.of<UserProvider>(context, listen: false).currentUser = null;
+      }
+
+      // Navigate to login screen
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          AppRoutes.loginScreen,
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      print("Logout error: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error logging out: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void ShowLanguageButtonSheet() {
     showModalBottomSheet(
         context: context, builder: (context) => LanguageButtomSheet());
@@ -170,26 +209,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context, builder: (context) => ThemeButtomSheet());
   }
 }
-/*    ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.logoutColor,
-                    padding: EdgeInsets.all(16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16))),
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      color: AppColor.primaryLightbgColor,
-                      size: 25,
-                    ),
-                    SizedBox(
-                      width: width * 0.02,
-                    ),
-                    Text(
-                      S.of(context).logout,
-                      style: AppStyle.bold20White,
-                    )
-                  ],
-                ))*/

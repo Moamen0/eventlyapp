@@ -4,6 +4,7 @@ import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/event_tab_item.dar
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_elevated_button.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_textformfiled.dart';
 import 'package:eventlyapp/Providers/event_list.dart';
+import 'package:eventlyapp/Providers/user_provider.dart';
 import 'package:eventlyapp/add%20event/widget/add_Time&Date.dart';
 import 'package:eventlyapp/generated/l10n.dart';
 import 'package:eventlyapp/model/event.dart';
@@ -11,6 +12,7 @@ import 'package:eventlyapp/utils/app_assets.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_style.dart';
 import 'package:eventlyapp/utils/firebase_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +36,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
   String formatDate = "";
   String selectEventImage = "";
   var formKey = GlobalKey<FormState>();
+  late UserProvider userProvider;
 
   List<String> eventImageList = [
     AppAssets.sportEvent,
@@ -96,6 +99,13 @@ class _EditEventScreenState extends State<EditEventScreen> {
   }
 
   @override
+  void dispose() {
+    titleController.dispose();
+    describtionController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -103,6 +113,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
     final categories = CategoryModel.getCategories(context);
     final selectedCategory = categories[selectedIndex];
     eventListProvider = Provider.of<EventListProvider>(context);
+    userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -336,11 +347,13 @@ class _EditEventScreenState extends State<EditEventScreen> {
           eventDateTime: selectedDate!,
           eventTime: formatTime);
 
-      FirebaseUtils.updateEventInFireStore(updatedEvent).timeout(
-        Duration(seconds: 1),
-        onTimeout: () {
+      FirebaseUtils.updateEventInFireStore(
+              updatedEvent, userProvider.currentUser?.id ?? "")
+          .then(
+        (value) {
           print("Event updated successfully");
-          eventListProvider.getEventCollections();
+          eventListProvider
+              .getEventCollections(userProvider.currentUser?.id ?? '');
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -360,21 +373,25 @@ class _EditEventScreenState extends State<EditEventScreen> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('Delete Event'),
+          title: Text(
+            'Delete Event',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
           content: Text(
             'Are you sure you want to delete "${widget.event.eventTitle}"? This action cannot be undone.',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(dialogContext); // Close dialog only
+                Navigator.pop(dialogContext);
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(dialogContext); // Close dialog
-                _deleteEvent(); // This will handle navigation to home
+                Navigator.pop(dialogContext);
+                _deleteEvent();
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
@@ -388,29 +405,30 @@ class _EditEventScreenState extends State<EditEventScreen> {
   }
 
   void _deleteEvent() {
-    FirebaseUtils.deleteEventFromFireStore(widget.event.id!).timeout(
-      Duration(seconds: 1),
-      onTimeout: () {
+    FirebaseUtils.deleteEventFromFireStore(widget.event.id!, userProvider.currentUser?.id ?? "").then(
+      (value) {
         print("Event deleted successfully");
-        eventListProvider.getEventCollections();
+        eventListProvider.getEventCollections(userProvider.currentUser?.id ?? '');
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('🗑️ Event deleted successfully!'),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.red,
             duration: Duration(seconds: 2),
           ),
         );
 
         Navigator.pop(context);
       },
-    );
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    describtionController.dispose();
-    super.dispose();
+    ).catchError((error) {
+      print("Error deleting event: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('❌ Error deleting event'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    });
   }
 }

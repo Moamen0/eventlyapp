@@ -5,6 +5,7 @@ import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/event_tab_item.dar
 import 'package:eventlyapp/Providers/app_language_provider.dart';
 import 'package:eventlyapp/Providers/app_theme_provider.dart';
 import 'package:eventlyapp/Providers/event_list.dart';
+import 'package:eventlyapp/Providers/user_provider.dart';
 import 'package:eventlyapp/generated/l10n.dart';
 import 'package:eventlyapp/model/event.dart';
 import 'package:eventlyapp/utils/app_color.dart';
@@ -25,25 +26,31 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   int selectedIndex = 0;
   late EventListProvider eventListProvider;
+  late UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
-        eventListProvider.getEventCollections();
+    
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      eventListProvider = Provider.of<EventListProvider>(context, listen: false);
+      userProvider = Provider.of<UserProvider>(context, listen: false);
+      
+      final userId = userProvider.currentUser?.id ?? "";
+      if (userId.isNotEmpty) {
+        eventListProvider.getEventCollections(userId);
         eventListProvider.filterEventsByCategory(0, context);
-        
-        setState(() {}); // Refresh UI after fetching events
-      },
-    );
+        setState(() {});
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var languageProvider = Provider.of<AppLanguageProvider>(context);
     var themeProvider = Provider.of<AppThemeProvider>(context);
-    eventListProvider = Provider.of<EventListProvider>(context, listen: false);
+    var userProvider = Provider.of<UserProvider>(context);
+    var eventListProvider = Provider.of<EventListProvider>(context);
 
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -67,14 +74,13 @@ class _HomeTabState extends State<HomeTab> {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Text(
-                  "Moamen Abdallah",
+                  userProvider.currentUser?.name ?? "Guest",
                   style: AppStyle.bold24White,
                 )
               ],
             ),
             Row(
               children: [
-                // Sort button
                 IconButton(
                   onPressed: () {
                     _showSortDialog(context);
@@ -155,8 +161,6 @@ class _HomeTabState extends State<HomeTab> {
                         labelPadding:
                             EdgeInsets.symmetric(horizontal: width * 0.02),
                         onTap: (index) {
-                          print(
-                              "🔵 Tab clicked: $index (${categories[index].name})");
                           selectedIndex = index;
                           eventListProvider.filterEventsByCategory(
                               index, context);

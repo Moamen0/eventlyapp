@@ -1,34 +1,31 @@
 import 'package:eventlyapp/Home%20Screen/tabs/home_tab/widget/edit_delete_event.dart';
+import 'package:eventlyapp/Providers/event_list.dart';
+import 'package:eventlyapp/Providers/user_provider.dart';
 import 'package:eventlyapp/model/event.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class EventItem extends StatefulWidget {
+class EventItem extends StatelessWidget {
   const EventItem({super.key, required this.event});
   final EventModel event;
-  
-  @override
-  State<EventItem> createState() => _EventItemState();
-}
-
-class _EventItemState extends State<EventItem> {
-  bool isLiked = false;
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    var eventListProvider = Provider.of<EventListProvider>(context, listen: false);
+    var userProvider = Provider.of<UserProvider>(context);
     
     return InkWell(
       onTap: () {
-        // Navigate to EditEventScreen when card is tapped
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EditEventScreen(event: widget.event),
+            builder: (context) => EditEventScreen(event: event),
           ),
         );
       },
@@ -44,7 +41,7 @@ class _EventItemState extends State<EventItem> {
           image: DecorationImage(
             fit: BoxFit.fill,
             image: AssetImage(
-              widget.event.eventImage,
+              event.eventImage,
             ),
           ),
         ),
@@ -63,11 +60,11 @@ class _EventItemState extends State<EventItem> {
                   child: Column(
                     children: [
                       Text(
-                        widget.event.eventDateTime.day.toString(),
+                        event.eventDateTime.day.toString(),
                         style: AppStyle.bold20Primary,
                       ),
                       Text(
-                        DateFormat("MMM").format(widget.event.eventDateTime),
+                        DateFormat("MMM").format(event.eventDateTime),
                         style: AppStyle.bold14Primarylight,
                       ),
                     ],
@@ -85,7 +82,7 @@ class _EventItemState extends State<EventItem> {
                   children: [
                     Expanded(
                       child: Text(
-                        widget.event.eventTitle,
+                        event.eventTitle,
                         style: Theme.of(context).textTheme.titleMedium,
                         softWrap: true,
                         overflow: TextOverflow.visible,
@@ -93,15 +90,17 @@ class _EventItemState extends State<EventItem> {
                       ),
                     ),
                     IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isLiked = !isLiked;
-                          });
-                        },
-                        icon: Icon(
-                          isLiked ? Clarity.heart_solid : Clarity.heart_line,
-                          color: AppColor.primaryLightColor,
-                        ))
+                      onPressed: () {
+                        eventListProvider.updateIsFavoriteEvent(
+                            event, context,userProvider.currentUser?.id ?? "");
+                      },
+                      icon: Icon(
+                        event.isFavorite == true
+                            ? Clarity.heart_solid
+                            : Clarity.heart_line,
+                        color: AppColor.primaryLightColor,
+                      ),
+                    )
                   ],
                 ),
               )

@@ -1,13 +1,23 @@
+import 'dart:async';
+
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_elevated_button.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_textformfiled.dart';
 import 'package:eventlyapp/Providers/app_language_provider.dart';
+import 'package:eventlyapp/Providers/event_list.dart';
+import 'package:eventlyapp/Providers/user_provider.dart';
+import 'package:eventlyapp/authentication/google_sign_in.dart';
 import 'package:eventlyapp/generated/l10n.dart';
+import 'package:eventlyapp/model/myUser.dart';
 import 'package:eventlyapp/utils/app_assets.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_routes.dart';
 import 'package:eventlyapp/utils/app_style.dart';
+import 'package:eventlyapp/utils/AlrertDialog.dart';
+import 'package:eventlyapp/utils/firebase_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -20,12 +30,131 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final formkey = GlobalKey<FormState>();
+  final googleSignInService = GoogleSignInService();
 
   bool isObscured = true;
   TextEditingController emailController =
-      TextEditingController(text: "Moamen@gmail.com");
+      TextEditingController(text: "moamen@gmail.com");
   TextEditingController passwordController =
       TextEditingController(text: "123456");
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeGoogleSignIn();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _initializeGoogleSignIn() {
+    unawaited(
+      googleSignInService.initialize(
+        onSignIn: (googleUser) async {
+          await _handleGoogleSignIn(googleUser);
+        },
+        onError: (error) {
+          _handleGoogleSignInError(error);
+        },
+      ),
+    );
+  }
+
+  Future<void> _handleGoogleSignIn(GoogleSignInAccount googleUser) async {
+    try {
+      final credential =
+          await googleSignInService.getFirebaseCredential(googleUser);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      await _handleAuthSuccess(userCredential.user);
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      AlretDiallogUtils.hideLoading(context: context);
+      AlretDiallogUtils.showMessage(
+        context: context,
+        title: "Failed",
+        message: e.message ?? "Firebase authentication failed",
+        positiveButtonText: "OK",
+      );
+    } catch (e) {
+      if (!mounted) return;
+      AlretDiallogUtils.hideLoading(context: context);
+      AlretDiallogUtils.showMessage(
+        context: context,
+        title: "Failed",
+        message: e.toString(),
+        positiveButtonText: "OK",
+      );
+    }
+  }
+
+  void _handleGoogleSignInError(Object error) {
+    if (!mounted) return;
+
+    final errorMessage = error is GoogleSignInException
+        ? 'Google Sign-In error: ${error.code}'
+        : 'An error occurred: $error';
+
+    AlretDiallogUtils.hideLoading(context: context);
+    AlretDiallogUtils.showMessage(
+      context: context,
+      title: "Failed",
+      message: errorMessage,
+      positiveButtonText: "OK",
+    );
+  }
+
+  Future<void> _handleAuthSuccess(User? firebaseUser) async {
+    if (firebaseUser == null) return;
+
+    try {
+      var user = await FirebaseUtils.readUsersFromFirestore(firebaseUser.uid);
+
+      if (user == null) {
+        Myuser newUser = Myuser(
+          id: firebaseUser.uid,
+          email: firebaseUser.email ?? "",
+          name: firebaseUser.displayName ?? "",
+        );
+        await FirebaseUtils.addUserToFirestore(newUser);
+        user = newUser;
+      }
+
+      if (!mounted) return;
+
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.updateUser(user);
+
+      var eventListProvider =
+          Provider.of<EventListProvider>(context, listen: false);
+      eventListProvider.getEventCollections(user?.id ?? "");
+
+      AlretDiallogUtils.hideLoading(context: context);
+      AlretDiallogUtils.showMessage(
+        context: context,
+        title: "Success",
+        message: "Account Logged in Successfully",
+        positiveButtonText: "OK",
+        onPositivePressed: () {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.homescreen);
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+      AlretDiallogUtils.hideLoading(context: context);
+      AlretDiallogUtils.showMessage(
+        context: context,
+        title: "Failed",
+        message: "Error: ${e.toString()}",
+        positiveButtonText: "OK",
+      );
+    }
+  }
+
   int? _getCurrentLanguageValue(String language) {
     switch (language) {
       case "en":
@@ -50,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var hieght = MediaQuery.of(context).size.height;
+    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     var languageProvider = Provider.of<AppLanguageProvider>(context);
 
@@ -63,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Image.asset(AppAssets.eventLogo),
               SizedBox(
-                height: hieght * 0.03,
+                height: height * 0.03,
               ),
               Form(
                 key: formkey,
@@ -89,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: Icon(EvaIcons.email),
                     ),
                     SizedBox(
-                      height: hieght * 0.02,
+                      height: height * 0.02,
                     ),
                     CustomTextformfiled(
                       controller: passwordController,
@@ -112,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               : Icon(EvaIcons.eye)),
                     ),
                     SizedBox(
-                      height: hieght * 0.002,
+                      height: height * 0.002,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -130,14 +259,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: hieght * 0.02,
+                      height: height * 0.02,
                     ),
                     CustomElevatedButton(
                       onPressed: login,
                       text: S.of(context).login,
                     ),
                     SizedBox(
-                      height: hieght * 0.02,
+                      height: height * 0.02,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -162,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: hieght * 0.02,
+                      height: height * 0.02,
                     ),
                     Row(
                       children: [
@@ -189,11 +318,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: hieght * 0.02,
+                      height: height * 0.02,
                     ),
                     CustomElevatedButton(
                       backgroundColor: Colors.transparent,
-                      onPressed: login,
+                      onPressed: _handleGoogleSignInClick,
                       text: S.of(context).login_with_google,
                       borderColor: AppColor.primaryLightColor,
                       textStyle: AppStyle.medium20Primary,
@@ -205,7 +334,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(
-                height: hieght * 0.02,
+                height: height * 0.02,
               ),
               AnimatedToggleSwitch<int?>.rolling(
                 iconOpacity: 100,
@@ -232,12 +361,60 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void login() {
-    if (formkey.currentState?.validate() == true) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.homescreen,
-        (route) => false,
+  void _handleGoogleSignInClick() async {
+    AlretDiallogUtils.showLoading(context: context, message: "Signing in...");
+    try {
+      await googleSignInService.signIn();
+    } catch (e) {
+      if (!mounted) return;
+      AlretDiallogUtils.hideLoading(context: context);
+      AlretDiallogUtils.showMessage(
+        context: context,
+        title: "Failed",
+        message: e.toString(),
+        positiveButtonText: "OK",
       );
+    }
+  }
+
+  void login() async {
+    if (formkey.currentState?.validate() == true) {
+      AlretDiallogUtils.showLoading(context: context, message: "Login in...");
+      try {
+        final credential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        await _handleAuthSuccess(credential.user);
+      } on FirebaseAuthException catch (e) {
+        if (!mounted) return;
+        AlretDiallogUtils.hideLoading(context: context);
+        if (e.code == 'invalid-credential') {
+          AlretDiallogUtils.showMessage(
+            context: context,
+            title: "Failed",
+            message: "No user found for that email.",
+            positiveButtonText: "OK",
+          );
+        } else if (e.code == 'wrong-password') {
+          AlretDiallogUtils.showMessage(
+            context: context,
+            title: "Failed",
+            message: "Wrong password provided for that user.",
+            positiveButtonText: "OK",
+          );
+        }
+      } catch (e) {
+        if (!mounted) return;
+        AlretDiallogUtils.hideLoading(context: context);
+        AlretDiallogUtils.showMessage(
+          context: context,
+          title: "Failed",
+          message: e.toString(),
+          positiveButtonText: "OK",
+        );
+      }
     }
   }
 
@@ -248,24 +425,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  Widget iconBuilder(int value) {
-    return languageIconBuilder(value, false);
-  }
-
-  Widget rollingIconBuilder(int? value, bool foreground) {
-    return Container(
-      child: Center(
-        child: flagByValue(value),
-      ),
-    );
-  }
-
-  Color colorBuilder(int value) => switch (value) {
-        0 => Colors.blueAccent,
-        1 => Colors.red,
-        _ => AppColor.primaryLightColor,
-      };
 
   Widget flagByValue(int? value) => switch (value) {
         0 => Flag(

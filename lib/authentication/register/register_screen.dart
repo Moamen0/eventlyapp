@@ -2,11 +2,17 @@ import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_elevated_button.dart';
 import 'package:eventlyapp/Home%20Screen/tabs/widgets/custom_textformfiled.dart';
 import 'package:eventlyapp/Providers/app_language_provider.dart';
+import 'package:eventlyapp/Providers/event_list.dart';
+import 'package:eventlyapp/Providers/user_provider.dart';
 import 'package:eventlyapp/generated/l10n.dart';
+import 'package:eventlyapp/model/myUser.dart';
+import 'package:eventlyapp/utils/AlrertDialog.dart';
 import 'package:eventlyapp/utils/app_assets.dart';
 import 'package:eventlyapp/utils/app_color.dart';
 import 'package:eventlyapp/utils/app_routes.dart';
 import 'package:eventlyapp/utils/app_style.dart';
+import 'package:eventlyapp/utils/firebase_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -24,6 +30,7 @@ class _LoginScreenState extends State<RegisterScreen> {
 
   bool isPasswordObscured = true;
   bool isRePasswordObscured = true;
+
   TextEditingController nameController = TextEditingController(text: "Moamen");
   TextEditingController emailController =
       TextEditingController(text: "moamen@gmail.com");
@@ -59,6 +66,7 @@ class _LoginScreenState extends State<RegisterScreen> {
     var hieght = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     var languageProvider = Provider.of<AppLanguageProvider>(context);
+    var eventListProvider = Provider.of<EventListProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -236,12 +244,72 @@ class _LoginScreenState extends State<RegisterScreen> {
     );
   }
 
-  void register() {
+  void register() async {
     if (formkey.currentState?.validate() == true) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.homescreen,
-        (route) => false,
-      );
+      AlretDiallogUtils.showLoading(
+          context: context, message: "Creating Account...");
+      try {
+        final credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        Myuser myuser = Myuser(
+          id: credential.user?.uid,
+          name: nameController.text,
+          email: emailController.text,
+        );
+
+        await FirebaseUtils.addUserToFirestore(myuser);
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateUser(myuser);
+        var eventListProvider = Provider.of<EventListProvider>(context, listen: false);
+        eventListProvider.getEventCollections(userProvider.currentUser?.id ?? '');
+        AlretDiallogUtils.hideLoading(context: context);
+        AlretDiallogUtils.showMessage(
+          context: context,
+          title: "Success",
+          message: "Account Created Successfully",
+          positiveButtonText: "OK",
+          onPositivePressed: () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRoutes.homescreen,
+              (route) => false,
+            );
+          },
+        );
+        print(credential.user?.uid ?? "no uid");
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          AlretDiallogUtils.hideLoading(context: context);
+          AlretDiallogUtils.showMessage(
+            context: context,
+            title: "Faild",
+            message: "The password provided is too weak.",
+            positiveButtonText: "OK",
+          );
+        } else if (e.code == 'email-already-in-use') {
+          AlretDiallogUtils.hideLoading(context: context);
+          AlretDiallogUtils.showMessage(
+            context: context,
+            title: "Faild",
+            message: "The account already exists for that email.",
+            positiveButtonText: "OK",
+          );
+        }
+      } catch (e) {
+        AlretDiallogUtils.hideLoading(context: context);
+        AlretDiallogUtils.showMessage(
+          context: context,
+          title: "Faild",
+          message: e.toString(),
+          positiveButtonText: "OK",
+        );
+      }
+      // Navigator.of(context).pushNamedAndRemoveUntil(
+      //   AppRoutes.homescreen,
+      //   (route) => false,
+      // );
     }
   }
 

@@ -5,10 +5,10 @@ import 'package:eventlyapp/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
 
 enum SortOption {
-  dateAscending,    // Oldest first
-  dateDescending,   // Newest first
-  titleAZ,          // A to Z
-  titleZA,          // Z to A
+  dateAscending, // Oldest first
+  dateDescending, // Newest first
+  titleAZ, // A to Z
+  titleZA, // Z to A
 }
 
 class EventListProvider extends ChangeNotifier {
@@ -16,40 +16,78 @@ class EventListProvider extends ChangeNotifier {
   List<EventModel> filterEventList = [];
   late CategoryModel category;
   List<CategoryModel> categoryList = [];
-  
+
   SortOption currentSortOption = SortOption.dateAscending;
   String? currentCategoryFilter;
+
+  void updateIsFavoriteEvent(EventModel event, BuildContext context,String uid) async {
+    try {
+      // Toggle immediately for offline mode
+      event.isFavorite = !event.isFavorite;
+      notifyListeners(); // Notify UI to rebuild immediately
+
+      // Check if context is still valid before showing snackbar
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✅ Favorite updated!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 1),
+        ),
+      );
+
+      // Try to update Firebase in background (may fail in offline mode)
+      try {
+        await FirebaseUtils.updateEventInFireStore(event,uid).then((value) {
+          return;
+        }
+          // const Duration(seconds: 2),
+          // onTimeout: () {
+          //   return;
+          // },
+        );
+      } catch (e) {
+        print('Firebase update failed (offline mode): $e');
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+
+      event.isFavorite = !event.isFavorite;
+      notifyListeners();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('❌ Error: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   List<CategoryModel> getCategoriesWithAll(BuildContext context) {
     return categoryList = CategoryModel.getCategoriesWithAll(context);
   }
 
-  void getEventCollections() async {
-    print("🔄 Fetching events from Firestore...");
-    
+  void getEventCollections(String uid) async {
     QuerySnapshot<EventModel> querySnapShot =
-        await FirebaseUtils.getEventToFirestore().get();
-    
+        await FirebaseUtils.getEventToFirestore(uid).get();
+
     eventList = querySnapShot.docs.map((doc) {
       EventModel event = doc.data();
       event.id = doc.id;
-      
-      print("📄 Loaded event: ${event.eventTitle} (ID: ${event.id})");
+
       return event;
     }).toList();
-    
-    print("✅ Total events loaded: ${eventList.length}");
-    
+
     _applyFilterAndSort();
   }
 
   void filterEventsByCategory(int tabIndex, BuildContext context) {
     final categories = CategoryModel.getCategoriesWithAll(context);
     final selectedCategory = categories[tabIndex];
-    
-    print("🔍 Filtering by category: ${selectedCategory.id} (${selectedCategory.name})");
-    print("📊 Total events: ${eventList.length}");
-    
+
     currentCategoryFilter = selectedCategory.id;
     _applyFilterAndSort();
   }
@@ -62,42 +100,38 @@ class EventListProvider extends ChangeNotifier {
   void _applyFilterAndSort() {
     if (currentCategoryFilter == null || currentCategoryFilter == "all") {
       filterEventList = List.from(eventList);
-      print("📋 Showing all categories");
     } else {
       filterEventList = eventList.where((event) {
         return event.categoryId == currentCategoryFilter;
       }).toList();
-      print("📋 Filtered to category: $currentCategoryFilter");
     }
 
     _sortEvents();
-    
-    print("✅ Filtered events count: ${filterEventList.length}");
+
     notifyListeners();
   }
 
   void _sortEvents() {
     switch (currentSortOption) {
       case SortOption.dateAscending:
-        filterEventList.sort((a, b) => a.eventDateTime.compareTo(b.eventDateTime));
-        print("📅 Sorted by date ascending");
+        filterEventList
+            .sort((a, b) => a.eventDateTime.compareTo(b.eventDateTime));
         break;
-        
+
       case SortOption.dateDescending:
-        filterEventList.sort((a, b) => b.eventDateTime.compareTo(a.eventDateTime));
-        print("📅 Sorted by date descending");
+        filterEventList
+            .sort((a, b) => b.eventDateTime.compareTo(a.eventDateTime));
         break;
-        
+
       case SortOption.titleAZ:
-        filterEventList.sort((a, b) => 
-          a.eventTitle.toLowerCase().compareTo(b.eventTitle.toLowerCase()));
+        filterEventList.sort((a, b) =>
+            a.eventTitle.toLowerCase().compareTo(b.eventTitle.toLowerCase()));
         print("🔤 Sorted by title A-Z");
         break;
-        
+
       case SortOption.titleZA:
-        filterEventList.sort((a, b) => 
-          b.eventTitle.toLowerCase().compareTo(a.eventTitle.toLowerCase()));
-        print("🔤 Sorted by title Z-A");
+        filterEventList.sort((a, b) =>
+            b.eventTitle.toLowerCase().compareTo(a.eventTitle.toLowerCase()));
         break;
     }
   }

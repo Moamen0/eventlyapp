@@ -52,5 +52,23 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>GIDClientID</key>
+		<string>1004552870785-6fjqvq8j56scubtbd6d6grbjj8vi652h.apps.googleusercontent.com</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.1004552870785-6fjqvq8j56scubtbd6d6grbjj8vi652h</string>
+				</array>
+			</dict>
+		</array>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>googlechrome</string>
+			<string>comgooglemaps</string>
+		</array>
 	</dict>
 </plist>
